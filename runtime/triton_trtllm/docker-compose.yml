@@ -1,7 +1,13 @@
+version: '3'
+
 services:
   tts:
-    image: soar97/triton-spark-tts:25.02
-    shm_size: '1gb'
+    image: triton-spark-tts:25.02
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    shm_size: '8gb'
+    network_mode: "host"
     ports:
       - "8000:8000"
       - "8001:8001"
@@ -9,6 +15,10 @@ services:
     environment:
       - PYTHONIOENCODING=utf-8
       - MODEL_ID=${MODEL_ID}
+      - NVIDIA_VISIBLE_DEVICES=all
+    runtime: nvidia
+    volumes:
+      - ./:/workspace
     deploy:
       resources:
         reservations:
